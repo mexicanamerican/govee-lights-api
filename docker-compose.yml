@@ -6,7 +6,7 @@ services:
     container_name: govee-lights-api
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - GOVEE_API_KEY=${GOVEE_API_KEY:-}
       - GOVEE_BASE_URL=${GOVEE_BASE_URL:-https://openapi.api.govee.com/router/api/v1}
