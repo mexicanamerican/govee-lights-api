@@ -6,25 +6,20 @@ WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    unzip \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements first to leverage Docker layer caching
+COPY requirements.txt .
+
 # Install Python dependencies
-RUN pip install --no-cache-dir \
-    fastapi==0.109.0 \
-    uvicorn[standard]==0.27.0 \
-    httpx==0.26.0 \
-    pydantic==2.5.3 \
-    pydantic-settings==2.1.0 \
-    python-dotenv==1.0.0
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the zip file (you'll mount this volume)
-COPY govee-lights-api.zip .
-
-# Extract the application
-RUN unzip govee-lights-api.zip -d . && \
-    rm govee-lights-api.zip
+# Copy the application source files
+COPY config.py .
+COPY govee_client.py .
+COPY main.py .
+COPY models.py .
 
 # Create a non-root user
 RUN addgroup --system app && adduser --system --group app

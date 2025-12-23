@@ -2,29 +2,18 @@ version: '3.8'
 
 services:
   govee-lights-api:
-    build: 
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: govee-lights-api
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      # Set your Govee API key here
       - GOVEE_API_KEY=${GOVEE_API_KEY:-}
-      # You can optionally override the default base URL
       - GOVEE_BASE_URL=${GOVEE_BASE_URL:-https://openapi.api.govee.com/router/api/v1}
-      # Port for the FastAPI application
-      - PORT=8000
-    volumes:
-      # Mount the zip file with the application code
-      - ./govee-lights-api.zip:/app/govee-lights-api.zip:ro
-      # Optional: Mount a volume for persistent data if needed
-      - ./data:/app/data
     networks:
       - govee-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -33,7 +22,3 @@ services:
 networks:
   govee-network:
     driver: bridge
-
-volumes:
-  govee-data:
-    driver: local
